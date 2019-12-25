@@ -4,8 +4,3 @@ IFS=$'\n\t'
 set -vx
 
 bundle install
-
-####
-# install javascript dependencies
-####
-../scripts/bundle_js.sh
