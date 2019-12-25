@@ -5,4 +5,7 @@ set -vx
 
 bundle install
 
-# Do any other automated setup that you need to do here
+####
+# install javascript dependencies
+####
+../scripts/bundle_js.sh
