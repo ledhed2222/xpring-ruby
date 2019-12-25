@@ -1,0 +1,3 @@
+[submodule "xpring-common-js"]
+	path = xpring-common-js
+	url = https://github.com/xpring-eng/xpring-common-js.git
