@@ -9,7 +9,7 @@ module Xpring
         <<-JAVASCRIPT
         EntryPoint.Utils.isValidAddress('#{address}');
         JAVASCRIPT
-      end
+      end == true
     end
 
     def self.valid_x_address?(address)
@@ -17,7 +17,7 @@ module Xpring
         <<-JAVASCRIPT
         EntryPoint.Utils.isValidXAddress('#{address}');
         JAVASCRIPT
-      end
+      end == true
     end
 
     def self.valid_classic_address?(address)
@@ -25,7 +25,7 @@ module Xpring
         <<-JAVASCRIPT
         EntryPoint.Utils.isValidClassicAddress('#{address}');
         JAVASCRIPT
-      end
+      end == true
     end
 
     def self.encode(classic_address, tag: nil, test: false)
