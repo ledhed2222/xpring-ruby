@@ -27,11 +27,11 @@ Gem::Specification.new do |spec|
   end
   spec.bindir        = "exe"
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
-  #spec.extensions    = "ext/xpring/extconf.rb"
+  spec.extensions    = "ext/xpring/extconf.rb"
   spec.require_paths = ["lib"]
 
   spec.add_development_dependency "bundler", "~> 2.0"
   spec.add_development_dependency "rake", "~> 10.0"
   spec.add_development_dependency "rspec", "~> 3.0"
-  #spec.add_development_dependency "rake-compiler"
+  spec.add_development_dependency "rake-compiler"
 end
