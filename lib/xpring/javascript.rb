@@ -10,7 +10,7 @@ module Xpring
       script = prepare(yield)
       raw = IO.popen("node -p \"#{script}\"") do |io|
         io.readlines
-      end.first.strip
+      end.first&.strip
       parse(raw)
     end
 
