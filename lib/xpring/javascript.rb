@@ -7,10 +7,10 @@ module Xpring
     LIBRARY_PATH = File.expand_path("../../../ext/xpring/xpring.js", __FILE__)
 
     def self.run
-      script = prepare(yield).tap { |x| puts "INPUT: #{x}" }
+      script = prepare(yield)
       raw = IO.popen("node -p \"#{script}\"") do |io|
         io.readlines
-      end.tap { |x| puts "OUTPUT: #{x}" }.first.strip
+      end.first.strip
       parse(raw)
     end
 
