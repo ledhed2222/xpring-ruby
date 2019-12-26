@@ -55,7 +55,7 @@ module Xpring
     def address
       @address ||= Javascript.run do
         <<-JAVASCRIPT
-        #{assign_wallet_to("wallet")}
+        #{inject_wallet_as("wallet")}
         wallet.getAddress();
         JAVASCRIPT
       end
@@ -64,7 +64,7 @@ module Xpring
     def sign(input)
       signed = Javascript.run do
         <<-JAVASCRIPT
-        #{assign_wallet_to("wallet")}
+        #{inject_wallet_as("wallet")}
         wallet.sign('#{input}');
         JAVASCRIPT
       end
@@ -77,7 +77,7 @@ module Xpring
     def valid?(message, signature)
       Javascript.run do
         <<-JAVASCRIPT
-        #{assign_wallet_to("wallet")}
+        #{inject_wallet_as("wallet")}
         wallet.verify('#{message}', '#{signature}');
         JAVASCRIPT
       end == true
@@ -85,7 +85,7 @@ module Xpring
 
     private
 
-    def assign_wallet_to(var_name)
+    def inject_wallet_as(var_name)
       <<-JAVASCRIPT
       const #{var_name} = new EntryPoint.Wallet(
         '#{public_key}',

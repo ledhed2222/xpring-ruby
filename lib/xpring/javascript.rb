@@ -29,7 +29,7 @@ module Xpring
 
     def self.prepare(script)
       [
-        library,
+        inject_library,
         add_stringify_to(script),
       ].join("\n")
     end
@@ -42,7 +42,7 @@ module Xpring
     end
     private_class_method :add_stringify_to
 
-    def self.library
+    def self.inject_library
       # props to:
       # https://www.scriptol.com/javascript/include.php
       <<-JAVASCRIPT
@@ -51,7 +51,7 @@ module Xpring
       vm.runInThisContext(fs.readFileSync('#{LIBRARY_PATH}'));
       JAVASCRIPT
     end
-    private_class_method :library
+    private_class_method :inject_library
   end
 end
 
