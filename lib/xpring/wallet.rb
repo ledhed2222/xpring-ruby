@@ -25,7 +25,6 @@ module Xpring
       if result.nil?
         raise Error.new(INVALID_MNEMONIC_OR_DERIVATION_PATH_MSG)
       end
-
       new(result[:publicKey], result[:privateKey], result[:test])
     end
 
@@ -40,12 +39,11 @@ module Xpring
         );
         JAVASCRIPT
       end
-
-      if result.nil?
-        raise Error.new(INVALID_MNEMONIC_OR_DERIVATION_PATH_MSG)
-      end
-
       new(result[:publicKey], result[:privateKey], result[:test])
+    end
+
+    def self.random
+      raise NotImplementedError.new("Not compatible with node")
     end
 
     def initialize(public_key, private_key, test)
