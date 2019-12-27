@@ -37,7 +37,7 @@ module Xpring
 
     def self.add_stringify_to(script)
       script.split(";").tap do |script_array|
-        script_array[-1] = "JSON.stringify(#{script_array[-1].tr(";", "")})"
+        script_array[-1] = "JSON.stringify(#{script_array[-1]})"
       end.join(";\n")
     end
     private_class_method :add_stringify_to
