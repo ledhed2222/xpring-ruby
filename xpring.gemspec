@@ -2,7 +2,7 @@
 
 lib = File.expand_path("lib", __dir__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require "xpring/version"
+require "xpring"
 
 Gem::Specification.new do |spec|
   spec.name          = "xpring"
@@ -35,3 +35,4 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rspec", "~> 3.0"
   spec.add_development_dependency "rake-compiler"
 end
+

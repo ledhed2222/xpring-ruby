@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require_relative "./javascript"
-require_relative "./error"
+require "xpring/javascript"
+require "xpring/error"
 
 module Xpring
   class Wallet
