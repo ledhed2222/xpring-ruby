@@ -19,7 +19,7 @@ module Xpring
                     JSON.parse(result)
                   rescue JSON::ParserError
                   end
-      if from_json.is_a?(Hash)
+      if from_json.respond_to?(:transform_keys)
         from_json.transform_keys(&:to_sym)
       else
         from_json
@@ -36,7 +36,7 @@ module Xpring
     private_class_method :prepare
 
     def self.add_stringify_to(script)
-      script.split(";").tap do |script_array|
+      script.strip.split(";").tap do |script_array|
         script_array[-1] = "JSON.stringify(#{script_array[-1]})"
       end.join(";\n")
     end
