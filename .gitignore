@@ -12,3 +12,6 @@
 
 # MacOS artifacts
 .DS_Store
+
+# RVM configuration
+.ruby-version

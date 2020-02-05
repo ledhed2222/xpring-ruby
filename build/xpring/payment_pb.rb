@@ -19,6 +19,6 @@ end
 
 module Io
   module Xpring
-    Payment = ::Google::Protobuf::DescriptorPool.generated_pool.lookup("io.xpring.Payment").msgclass
+    Payment = Google::Protobuf::DescriptorPool.generated_pool.lookup("io.xpring.Payment").msgclass
   end
 end

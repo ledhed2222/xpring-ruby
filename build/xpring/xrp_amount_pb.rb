@@ -13,6 +13,6 @@ end
 
 module Io
   module Xpring
-    XRPAmount = ::Google::Protobuf::DescriptorPool.generated_pool.lookup("io.xpring.XRPAmount").msgclass
+    XRPAmount = Google::Protobuf::DescriptorPool.generated_pool.lookup("io.xpring.XRPAmount").msgclass
   end
 end

@@ -15,6 +15,6 @@ end
 
 module Io
   module Xpring
-    TransactionStatus = ::Google::Protobuf::DescriptorPool.generated_pool.lookup("io.xpring.TransactionStatus").msgclass
+    TransactionStatus = Google::Protobuf::DescriptorPool.generated_pool.lookup("io.xpring.TransactionStatus").msgclass
   end
 end

@@ -37,3 +37,10 @@ Bug reports and pull requests are welcome on GitHub at https://github.com/[USERN
 ## License
 
 The gem is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
+
+
+# TODO
+
+- what is the compilation story for this gem?
+- am i putting the _pb.rb files in the correct place? can i do this with the
+  `ext` folder instead of the `build` one?

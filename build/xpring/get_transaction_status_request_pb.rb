@@ -13,6 +13,6 @@ end
 
 module Io
   module Xpring
-    GetTransactionStatusRequest = ::Google::Protobuf::DescriptorPool.generated_pool.lookup("io.xpring.GetTransactionStatusRequest").msgclass
+    GetTransactionStatusRequest = Google::Protobuf::DescriptorPool.generated_pool.lookup("io.xpring.GetTransactionStatusRequest").msgclass
   end
 end

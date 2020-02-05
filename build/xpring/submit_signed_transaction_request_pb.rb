@@ -14,6 +14,6 @@ end
 
 module Io
   module Xpring
-    SubmitSignedTransactionRequest = ::Google::Protobuf::DescriptorPool.generated_pool.lookup("io.xpring.SubmitSignedTransactionRequest").msgclass
+    SubmitSignedTransactionRequest = Google::Protobuf::DescriptorPool.generated_pool.lookup("io.xpring.SubmitSignedTransactionRequest").msgclass
   end
 end

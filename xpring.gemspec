@@ -28,13 +28,15 @@ Gem::Specification.new do |spec|
   spec.bindir        = "exe"
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.extensions    = "ext/xpring/extconf.rb"
-  spec.require_paths = ["lib"]
+  spec.require_paths = ["lib", "build"]
 
+  spec.add_runtime_dependency "grpc"
   spec.add_runtime_dependency "google-protobuf", ">= 3.11"
 
   spec.add_development_dependency "bundler", "~> 2.0"
   spec.add_development_dependency "rake", "~> 10.0"
   spec.add_development_dependency "rspec", "~> 3.0"
   spec.add_development_dependency "rake-compiler"
+  spec.add_development_dependency "grpc-tools"
 end
 

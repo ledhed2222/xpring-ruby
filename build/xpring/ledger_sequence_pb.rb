@@ -13,6 +13,6 @@ end
 
 module Io
   module Xpring
-    LedgerSequence = ::Google::Protobuf::DescriptorPool.generated_pool.lookup("io.xpring.LedgerSequence").msgclass
+    LedgerSequence = Google::Protobuf::DescriptorPool.generated_pool.lookup("io.xpring.LedgerSequence").msgclass
   end
 end

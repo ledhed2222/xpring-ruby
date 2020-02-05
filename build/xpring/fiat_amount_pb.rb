@@ -16,6 +16,6 @@ end
 
 module Io
   module Xpring
-    FiatAmount = ::Google::Protobuf::DescriptorPool.generated_pool.lookup("io.xpring.FiatAmount").msgclass
+    FiatAmount = Google::Protobuf::DescriptorPool.generated_pool.lookup("io.xpring.FiatAmount").msgclass
   end
 end

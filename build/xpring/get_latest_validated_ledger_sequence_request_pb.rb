@@ -12,6 +12,6 @@ end
 
 module Io
   module Xpring
-    GetLatestValidatedLedgerSequenceRequest = ::Google::Protobuf::DescriptorPool.generated_pool.lookup("io.xpring.GetLatestValidatedLedgerSequenceRequest").msgclass
+    GetLatestValidatedLedgerSequenceRequest = Google::Protobuf::DescriptorPool.generated_pool.lookup("io.xpring.GetLatestValidatedLedgerSequenceRequest").msgclass
   end
 end

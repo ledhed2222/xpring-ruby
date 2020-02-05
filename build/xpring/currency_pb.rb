@@ -14,6 +14,6 @@ end
 
 module Io
   module Xpring
-    Currency = ::Google::Protobuf::DescriptorPool.generated_pool.lookup("io.xpring.Currency").enummodule
+    Currency = Google::Protobuf::DescriptorPool.generated_pool.lookup("io.xpring.Currency").enummodule
   end
 end

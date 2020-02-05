@@ -12,6 +12,6 @@ end
 
 module Io
   module Xpring
-    GetFeeRequest = ::Google::Protobuf::DescriptorPool.generated_pool.lookup("io.xpring.GetFeeRequest").msgclass
+    GetFeeRequest = Google::Protobuf::DescriptorPool.generated_pool.lookup("io.xpring.GetFeeRequest").msgclass
   end
 end

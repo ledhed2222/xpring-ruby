@@ -13,6 +13,6 @@ end
 
 module Io
   module Xpring
-    GetAccountInfoRequest = ::Google::Protobuf::DescriptorPool.generated_pool.lookup("io.xpring.GetAccountInfoRequest").msgclass
+    GetAccountInfoRequest = Google::Protobuf::DescriptorPool.generated_pool.lookup("io.xpring.GetAccountInfoRequest").msgclass
   end
 end
