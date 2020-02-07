@@ -5,7 +5,10 @@ require "json"
 module Xpring
   module Javascript
     LIBRARY_PATH = File.expand_path("../../../ext/xpring/xpring.js", __FILE__)
+    private_constant :LIBRARY_PATH
 
+    # @yieldreturn [String]
+    # @return [Hash, String, nil]
     def self.run
       script = prepare(yield)
       raw = IO.popen("node -p \"#{script}\"") do |io|
