@@ -2,7 +2,6 @@ PATH
   remote: .
   specs:
     xpring (0.1.0)
-      google-protobuf (>= 3.11)
       grpc
 
 GEM
