@@ -7,15 +7,21 @@ module Xpring
   class Wallet
     INVALID_MNEMONIC_OR_DERIVATION_PATH_MSG = "Invalid mnemonic or derivation path"
     SIGN_ERROR_MSG = "Could not sign input"
+    private_constant :INVALID_MNEMONIC_OR_DERIVATION_PATH_MSG, :SIGN_ERROR_MSG
 
     attr_reader :public_key, :private_key, :test
 
+    # @param mnemonic [#to_s]
+    # @param derivation_path [#to_s, nil]
+    # @param test [true, false]
+    # @raise [Xpring::Error]
+    # @return [Xpring::Wallet]
     def self.from_mnemonic(mnemonic, derivation_path: nil, test: false)
       result = Javascript.run do
         <<-JAVASCRIPT
         EntryPoint.Wallet.generateWalletFromMnemonic(
-          '#{mnemonic}',
-          '#{derivation_path}' ||
+          '#{mnemonic.to_s}',
+          '#{derivation_path&.to_s}' ||
             EntryPoint.Wallet.getDefaultDerivationPath(),
           #{test},
         );
@@ -28,12 +34,16 @@ module Xpring
       new(result[:publicKey], result[:privateKey], result[:test])
     end
 
+    # @param seed [#to_s]
+    # @param derivation_path [#to_s, nil]
+    # @param test [true, false]
+    # @return [Xpring::Wallet]
     def self.from_seed(seed, deriviation_path: nil, test: false)
       result = Javascript.run do
         <<-JAVASCRIPT
         EntryPoint.Wallet.generateHDWalletFromSeed(
-          '#{seed}',
-          '#{derivation_path}' ||
+          '#{seed.to_s}',
+          '#{derivation_path&.to_s}' ||
             EntryPoint.Wallet.getDefaultDerivationPath(),
           #{test},
         );
@@ -42,16 +52,21 @@ module Xpring
       new(result[:publicKey], result[:privateKey], result[:test])
     end
 
+    # @raise [NotImplementedError]
     def self.random
       raise NotImplementedError.new("Not compatible with node")
     end
 
+    # @param public_key [#to_s]
+    # @param private_key [#to_s]
+    # @param test [true, false]
     def initialize(public_key, private_key, test)
-      @public_key = public_key
-      @private_key = private_key
+      @public_key = public_key.to_s
+      @private_key = private_key.to_s
       @test = test
     end
 
+    # @return [String]
     def address
       @address ||= Javascript.run do
         <<-JAVASCRIPT
@@ -61,11 +76,14 @@ module Xpring
       end
     end
 
+    # @param input [#to_s]
+    # @raise [Xpring::Error]
+    # @return [String]
     def sign(input)
       signed = Javascript.run do
         <<-JAVASCRIPT
         #{inject_wallet_as("wallet")}
-        wallet.sign('#{input}');
+        wallet.sign('#{input.to_s}');
         JAVASCRIPT
       end
       if signed.nil?
@@ -74,11 +92,14 @@ module Xpring
       signed
     end
 
+    # @param message [#to_s]
+    # @param signature [#to_s]
+    # @return [true, false]
     def valid?(message, signature)
       Javascript.run do
         <<-JAVASCRIPT
         #{inject_wallet_as("wallet")}
-        wallet.verify('#{message}', '#{signature}');
+        wallet.verify('#{message.to_s}', '#{signature.to_s}');
         JAVASCRIPT
       end == true
     end
