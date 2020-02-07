@@ -28,9 +28,7 @@ module Xpring
         JAVASCRIPT
       end
 
-      if result.nil?
-        raise Error.new(INVALID_MNEMONIC_OR_DERIVATION_PATH_MSG)
-      end
+      raise Error.new(INVALID_MNEMONIC_OR_DERIVATION_PATH_MSG) if result.nil?
       new(result[:publicKey], result[:privateKey], result[:test])
     end
 
@@ -86,9 +84,7 @@ module Xpring
         wallet.sign('#{input.to_s}');
         JAVASCRIPT
       end
-      if signed.nil?
-        raise Error.new(SIGN_ERROR_MSG)
-      end
+      raise Error.new(SIGN_ERROR_MSG) if signed.nil?
       signed
     end
 
