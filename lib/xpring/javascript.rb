@@ -8,7 +8,7 @@ module Xpring
     private_constant :LIBRARY_PATH
 
     # @yieldreturn [String]
-    # @return [Hash, String, nil]
+    # @return [Hash<Symbol, Object>, String, nil]
     def self.run
       script = prepare(yield)
       raw = IO.popen("node -p \"#{script}\"") do |io|

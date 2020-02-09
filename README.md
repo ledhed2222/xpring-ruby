@@ -41,11 +41,10 @@ The gem is available as open source under the terms of the [MIT License](https:/
 
 # TODO
 
+- tx status...
+- sending xrp
 - what is the compilation story for this gem?
-- am i putting the _pb.rb files in the correct place? can i do this with the
-  `ext` folder instead of the `build` one?
 - grpc deadlines?
-- should we raise or return nil when grpc calls fail?
 - tests
 - rubocop?
 - ruby docs
