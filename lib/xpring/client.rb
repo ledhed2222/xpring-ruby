@@ -10,6 +10,7 @@ require "payment_pb"
 require "xpring/util"
 require "xpring/error"
 require "xpring/javascript"
+require "grpc"
 
 module Xpring
   class Client
@@ -27,9 +28,9 @@ module Xpring
     end
 
     # @param address [#to_s]
-    # @return [Integer]
+    # @return [Integer, nil]
     def balance_of(address)
-      account_data(address.to_s).account_data.balance.drops
+      account_data(address.to_s)&.account_data&.balance&.drops
     end
 
     # TODO: doesn't work
@@ -43,20 +44,19 @@ module Xpring
     # @param amount [#to_i]
     # @param to [#to_s]
     # @param from [Xpring::Wallet]
+    # @raise [Xpring::Error]
+    # TODO: doesn't work
     def send_xrp(amount:, to:, from:)
       amount = amount.to_i
       to = to.to_s
 
-      if !Util.valid_x_address?(to)
-        raise Error.new(X_ADDRESS_REQUIRED_MSG)
-      end
+      raise Error.new(X_ADDRESS_REQUIRED_MSG) if !Util.valid_x_address?(to)
 
       classic_address = Util.decode(from.address)
-      if !classic_address
-        raise Error.new(X_ADDRESS_REQUIRED_MSG)
-      end
+      raise Error.new(X_ADDRESS_REQUIRED_MSG) if !classic_address
 
       account_data = account_data(classic_address[:address])
+      raise Error.new(X_ADDRESS_REQUIRED_MSG) if account_data.nil?
 
       xrp_drops_amount = Rpc::V1::XRPDropsAmount.new(
         drops: amount,
@@ -120,10 +120,10 @@ module Xpring
     end
 
     def account_data(address)
-      request = Rpc::V1::GetAccountInfoRequest.new(
+      client.get_account_info(Rpc::V1::GetAccountInfoRequest.new(
         account: Rpc::V1::AccountAddress.new(address: address.to_s),
-      )
-      client.get_account_info(request)
+      ))
+    rescue GRPC::NotFound
     end
 
     def last_validated_ledger_sequence
