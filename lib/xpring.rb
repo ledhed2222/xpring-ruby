@@ -4,7 +4,5 @@ require "xpring/version"
 require "xpring/wallet"
 require "xpring/util"
 require "xpring/client"
-
-module Xpring
-end
+require "xpring/error"
 

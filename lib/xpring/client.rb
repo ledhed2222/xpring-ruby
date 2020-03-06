@@ -1,16 +1,17 @@
 # frozen_string_literal: true
 
-require "rpc/v1/amount_pb"
-require "rpc/v1/account_info_pb"
-require "rpc/v1/xrp_ledger_services_pb"
-require "rpc/v1/tx_pb"
-require "rpc/v1/fee_pb"
-require "rpc/v1/transaction_pb"
-require "payment_pb"
+require "grpc"
 require "xpring/util"
 require "xpring/error"
 require "xpring/javascript"
-require "grpc"
+require "org/xrpl/rpc/v1/get_account_info_pb"
+require "org/xrpl/rpc/v1/get_transaction_pb"
+require "org/xrpl/rpc/v1/amount_pb"
+require "org/xrpl/rpc/v1/account_pb"
+require "org/xrpl/rpc/v1/transaction_pb"
+require "org/xrpl/rpc/v1/submit_pb"
+require "org/xrpl/rpc/v1/xrp_ledger_services_pb"
+require "org/xrpl/rpc/v1/get_fee_pb"
 
 module Xpring
   class Client
@@ -33,12 +34,12 @@ module Xpring
       account_data(address.to_s)&.account_data&.balance&.drops
     end
 
-    # TODO: doesn't work
+    # @param transaction [#to_s]
+    # @return [Symbol, nil]
+    # TODO - maybe transaction should be a class, should allow for returning
+    # specific result and result type
     def status_of(transaction)
-      request = Rpc::V1::GetTxRequest.new(
-        hash: Util.byte_string_from(transaction),
-      )
-      client.get_tx(request)
+      transaction_data(transaction.to_s)&.meta&.transaction_result&.result_type
     end
 
     # @param amount [#to_i]
@@ -58,28 +59,28 @@ module Xpring
       account_data = account_data(classic_address[:address])
       raise Error.new(X_ADDRESS_REQUIRED_MSG) if account_data.nil?
 
-      xrp_drops_amount = Rpc::V1::XRPDropsAmount.new(
+      xrp_drops_amount = Org::Xrpl::Rpc::V1::XRPDropsAmount.new(
         drops: amount,
       )
 
-      currency_amount = Rpc::V1::CurrencyAmount.new(
+      currency_amount = Org::Xrpl::Rpc::V1::CurrencyAmount.new(
         xrp_amount: xrp_drops_amount,
       )
 
-      destination = Rpc::V1::AccountAddress.new(
+      destination = Org::Xrpl::Rpc::V1::AccountAddress.new(
         address: to,
       )
 
-      payment = Io::Xpring::Payment.new(
+      payment = Org::Xrpl::Rpc::V1::Payment.new(
         destination: destination,
         amount: currency_amount,
       )
 
-      account = Rpc::V1::AccountAddress.new(
+      account = Org::Xrpl::Rpc::V1::AccountAddress.new(
         address: from.address,
       )
 
-      transaction = Rpc::V1::Transaction.new(
+      transaction = Org::Xrpl::Rpc::V1::Transaction.new(
         account: account,
         fee: minimum_fee,
         sequence: account_data.sequence,
@@ -95,7 +96,7 @@ module Xpring
         JAVASCRIPT
       end
 
-      request = Rpc::V1::XPRLedgerAPIService::SubmitTransactionRequest.new(
+      request = Org::Xrpl::Rpc::V1::SubmitTransactionRequest.new(
         signed_transaction: signed_transaction,
       )
 
@@ -105,14 +106,14 @@ module Xpring
     private
 
     def client
-      @client ||= Rpc::V1::XRPLedgerAPIService::Stub.new(
+      @client ||= Org::Xrpl::Rpc::V1::XRPLedgerAPIService::Stub.new(
         grpc_url,
         credentials,
       )
     end
 
     def fee
-      client.get_fee(Rpc::V1::GetFeeRequest.new)
+      client.get_fee(Org::Xrpl::Rpc::V1::GetFeeRequest.new)
     end
 
     def minimum_fee
@@ -120,8 +121,17 @@ module Xpring
     end
 
     def account_data(address)
-      client.get_account_info(Rpc::V1::GetAccountInfoRequest.new(
-        account: Rpc::V1::AccountAddress.new(address: address.to_s),
+      client.get_account_info(Org::Xrpl::Rpc::V1::GetAccountInfoRequest.new(
+        account: Org::Xrpl::Rpc::V1::AccountAddress.new(
+          address: address,
+        ),
+      ))
+    rescue GRPC::NotFound
+    end
+
+    def transaction_data(transaction)
+      client.get_transaction(Org::Xrpl::Rpc::V1::GetTransactionRequest.new(
+        hash: Util.byte_string_from(transaction),
       ))
     rescue GRPC::NotFound
     end

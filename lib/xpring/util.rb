@@ -59,11 +59,9 @@ module Xpring
     # @param hex_string [#to_s]
     # @return [String]
     def self.byte_string_from(hex_string)
-      Javascript.run do
-        <<-JAVASCRIPT
-        EntryPoint.Utils.toBytes('#{hex_string.to_s}');
-        JAVASCRIPT
-      end.values.join
+      hex_string.to_s.chars.each_slice(2).map do |*pair|
+        pair.join.hex
+      end.pack("C*")
     end
   end
 end
