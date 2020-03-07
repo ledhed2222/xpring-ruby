@@ -4,6 +4,7 @@ require "json"
 
 module Xpring
   module Javascript
+    ENTRY_POINT = "XpringCommonJS"
     LIBRARY_PATH = File.expand_path("../../../ext/xpring/xpring.js", __FILE__)
     private_constant :LIBRARY_PATH
 
@@ -11,7 +12,7 @@ module Xpring
     # @return [Hash<Symbol, Object>, String, nil]
     def self.run
       script = prepare(yield)
-      raw = IO.popen("node -p \"#{script}\"") do |io|
+      raw = IO.popen("node -p #{script.dump}") do |io|
         io.readlines
       end.first&.strip
       parse(raw)
@@ -34,24 +35,20 @@ module Xpring
       [
         inject_library,
         add_stringify_to(script),
-      ].join("\n")
+      ].join.strip.tr("\"", "\\\"").tr("\n", "")
     end
     private_class_method :prepare
 
     def self.add_stringify_to(script)
       script.strip.split(";").tap do |script_array|
         script_array[-1] = "JSON.stringify(#{script_array[-1]})"
-      end.join(";\n")
+      end.join(";").concat(";")
     end
     private_class_method :add_stringify_to
 
     def self.inject_library
-      # props to:
-      # https://www.scriptol.com/javascript/include.php
-      <<-JAVASCRIPT
-      const fs = require('fs');
-      const vm = require('vm');
-      vm.runInThisContext(fs.readFileSync('#{LIBRARY_PATH}'));
+      <<~JAVASCRIPT
+      const #{ENTRY_POINT} = require('#{LIBRARY_PATH}');
       JAVASCRIPT
     end
     private_class_method :inject_library

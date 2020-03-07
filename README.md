@@ -48,6 +48,12 @@ The gem is available as open source under the terms of the [MIT License](https:/
     `grpc_tools_ruby_protoc --proto_path=./rippled/src/ripple/proto
     --ruby_out=lib --grpc_out=lib
     ./rippled/src/ripple/proto/org/xrpl/rpc/v1/*.proto`
+    to recompile js files after pulling from xpring-common-js submodule:
+    `cd xpring-common-js`
+    `npm i`
+    `npm run webpack`
+    `cp dist/index.js ../ext/xpring/xpring.js`
+
 - grpc deadlines?
 - tests
 - rubocop?

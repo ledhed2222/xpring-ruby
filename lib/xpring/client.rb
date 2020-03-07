@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "grpc"
+require "json"
 require "xpring/util"
 require "xpring/error"
 require "xpring/javascript"
@@ -12,6 +13,7 @@ require "org/xrpl/rpc/v1/transaction_pb"
 require "org/xrpl/rpc/v1/submit_pb"
 require "org/xrpl/rpc/v1/xrp_ledger_services_pb"
 require "org/xrpl/rpc/v1/get_fee_pb"
+require "org/xrpl/rpc/v1/common_pb"
 
 module Xpring
   class Client
@@ -28,10 +30,10 @@ module Xpring
       @credentials = credentials
     end
 
-    # @param address [#to_s]
+    # @param address [#to_s] classic address
     # @return [Integer, nil]
     def balance_of(address)
-      account_data(address.to_s)&.account_data&.balance&.drops
+      account_data(address.to_s)&.account_data&.balance&.value&.xrp_amount&.drops
     end
 
     # @param transaction [#to_s]
@@ -46,17 +48,16 @@ module Xpring
     # @param to [#to_s]
     # @param from [Xpring::Wallet]
     # @raise [Xpring::Error]
-    # TODO: doesn't work
     def send_xrp(amount:, to:, from:)
       amount = amount.to_i
       to = to.to_s
 
       raise Error.new(X_ADDRESS_REQUIRED_MSG) if !Util.valid_x_address?(to)
 
-      classic_address = Util.decode(from.address)
+      classic_address = Util.decode(from.address)[:address]
       raise Error.new(X_ADDRESS_REQUIRED_MSG) if !classic_address
 
-      account_data = account_data(classic_address[:address])
+      account_data = account_data(classic_address)
       raise Error.new(X_ADDRESS_REQUIRED_MSG) if account_data.nil?
 
       xrp_drops_amount = Org::Xrpl::Rpc::V1::XRPDropsAmount.new(
@@ -67,34 +68,70 @@ module Xpring
         xrp_amount: xrp_drops_amount,
       )
 
-      destination = Org::Xrpl::Rpc::V1::AccountAddress.new(
+      amount = Org::Xrpl::Rpc::V1::Amount.new(
+        value: currency_amount,
+      )
+
+      destination_account_address = Org::Xrpl::Rpc::V1::AccountAddress.new(
         address: to,
+      )
+
+      destination = Org::Xrpl::Rpc::V1::Destination.new(
+        value: destination_account_address,
+      )
+
+      sender_account_address = Org::Xrpl::Rpc::V1::AccountAddress.new(
+        address: classic_address,
+      )
+
+      account = Org::Xrpl::Rpc::V1::Account.new(
+        value: sender_account_address,
       )
 
       payment = Org::Xrpl::Rpc::V1::Payment.new(
         destination: destination,
-        amount: currency_amount,
+        amount: amount,
       )
 
-      account = Org::Xrpl::Rpc::V1::AccountAddress.new(
-        address: from.address,
+      last_ledger_sequence = Org::Xrpl::Rpc::V1::LastLedgerSequence.new(
+        value: next_sequence_for_transaction,
+      )
+
+      signing_public_key = Org::Xrpl::Rpc::V1::SigningPublicKey.new(
+        value: Util.byte_string_from(from.public_key),
       )
 
       transaction = Org::Xrpl::Rpc::V1::Transaction.new(
         account: account,
-        fee: minimum_fee,
-        sequence: account_data.sequence,
+        fee: Org::Xrpl::Rpc::V1::XRPDropsAmount.new(
+          drops: minimum_fee,
+        ),
+        sequence: account_data.account_data.sequence,
         payment: payment,
-        last_ledger_sequence: next_sequence_for_transaction,
+        last_ledger_sequence: last_ledger_sequence,
+        signing_public_key: signing_public_key,
       )
 
-      signing_public_key_bytes = Util.byte_string_from(from.public_key)
-      # TODO i think i should just re implement signing
+      transaction_json = JSON.generate(
+        Account: transaction.account.value.address,
+        Fee: transaction.fee.drops.to_s, # ripple-binary-codec requires string
+        LastLedgerSequence: transaction.last_ledger_sequence.value,
+        Sequence: transaction.sequence.value,
+        SigningPubKey: from.public_key,
+        Amount: amount.value.xrp_amount.drops.to_s,
+        Destination: Util.decode(payment.destination.value.address)[:address],
+        TransactionType: "Payment",
+      )
+
       signed_transaction = Javascript.run do
-        <<-JAVASCRIPT
-        EntryPoint.Signer.signTransaction('''''
+        <<~JAVASCRIPT
+        #{from.inject_wallet_as("wallet")}
+        #{Javascript::ENTRY_POINT}.Signer.signTransactionFromJSON(
+          JSON.parse('#{transaction_json}'),
+          wallet,
+        );
         JAVASCRIPT
-      end
+      end.values.pack("C*")
 
       request = Org::Xrpl::Rpc::V1::SubmitTransactionRequest.new(
         signed_transaction: signed_transaction,
@@ -112,12 +149,12 @@ module Xpring
       )
     end
 
-    def fee
+    def fee_response
       client.get_fee(Org::Xrpl::Rpc::V1::GetFeeRequest.new)
     end
 
     def minimum_fee
-      fee.drops.minimum_fee
+      fee_response.fee.minimum_fee.drops
     end
 
     def account_data(address)
@@ -137,7 +174,7 @@ module Xpring
     end
 
     def last_validated_ledger_sequence
-      fee.ledger_current_index
+      fee_response.ledger_current_index
     end
 
     def next_sequence_for_transaction

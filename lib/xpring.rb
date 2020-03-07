@@ -6,3 +6,6 @@ require "xpring/util"
 require "xpring/client"
 require "xpring/error"
 
+module Xpring
+end
+

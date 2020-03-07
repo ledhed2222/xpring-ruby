@@ -8,8 +8,8 @@ module Xpring
     # @return [true, false]
     def self.valid_address?(address)
       Javascript.run do
-        <<-JAVASCRIPT
-        EntryPoint.Utils.isValidAddress('#{address.to_s}');
+        <<~JAVASCRIPT
+        #{Javascript::ENTRY_POINT}.Utils.isValidAddress('#{address.to_s}');
         JAVASCRIPT
       end == true
     end
@@ -18,8 +18,8 @@ module Xpring
     # @return [true, false]
     def self.valid_x_address?(address)
       Javascript.run do
-        <<-JAVASCRIPT
-        EntryPoint.Utils.isValidXAddress('#{address.to_s}');
+        <<~JAVASCRIPT
+        #{Javascript::ENTRY_POINT}.Utils.isValidXAddress('#{address.to_s}');
         JAVASCRIPT
       end == true
     end
@@ -28,8 +28,8 @@ module Xpring
     # @return [true, false]
     def self.valid_classic_address?(address)
       Javascript.run do
-        <<-JAVASCRIPT
-        EntryPoint.Utils.isValidClassicAddress('#{address.to_s}');
+        <<~JAVASCRIPT
+        #{Javascript::ENTRY_POINT}.Utils.isValidClassicAddress('#{address.to_s}');
         JAVASCRIPT
       end == true
     end
@@ -40,8 +40,8 @@ module Xpring
     # @return [String]
     def self.encode(classic_address, tag: nil, test: false)
       Javascript.run do
-        <<-JAVASCRIPT
-        EntryPoint.Utils.encodeXAddress('#{classic_address.to_s}', #{tag&.to_s}, #{test});
+        <<~JAVASCRIPT
+        #{Javascript::ENTRY_POINT}.Utils.encodeXAddress('#{classic_address.to_s}', #{tag&.to_s}, #{test});
         JAVASCRIPT
       end
     end
@@ -50,8 +50,8 @@ module Xpring
     # @return [String]
     def self.decode(x_address)
       Javascript.run do
-        <<-JAVASCRIPT
-        EntryPoint.Utils.decodeXAddress('#{x_address.to_s}');
+        <<~JAVASCRIPT
+        #{Javascript::ENTRY_POINT}.Utils.decodeXAddress('#{x_address.to_s}');
         JAVASCRIPT
       end
     end

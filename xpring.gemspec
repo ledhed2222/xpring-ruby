@@ -9,6 +9,7 @@ Gem::Specification.new do |spec|
   spec.version       = Xpring::VERSION
   spec.authors       = ["Greg Weisbrod"]
   spec.email         = ["greg.weisbrod@gmail.com"]
+  spec.required_ruby_version = ">= 2.3"
 
   spec.summary       = "xpring provides a Ruby-based SDK for the Ripple ledger"
   spec.homepage      = "https://github.com/ledhed2222/xpring-ruby"
