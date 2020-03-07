@@ -47,7 +47,7 @@ module Xpring
     end
 
     # @param x_address [#to_s]
-    # @return [String]
+    # @return [Hash<Symbol, Object>]
     def self.decode(x_address)
       Javascript.run do
         <<~JAVASCRIPT
@@ -56,12 +56,26 @@ module Xpring
       end
     end
 
-    # @param hex_string [#to_s]
-    # @return [String]
-    def self.byte_string_from(hex_string)
-      hex_string.to_s.chars.each_slice(2).map do |*pair|
+    # @param input [#to_s]
+    # @return [Array<Integer>]
+    def self.hex_bytes_from_string(input)
+      input.to_s.chars.each_slice(2).map do |*pair|
         pair.join.hex
-      end.pack("C*")
+      end
+    end
+
+    # @param input [Array<Integer>]
+    # @return [String]
+    def self.byte_string_from_hex_bytes(input)
+      input.pack("C*")
+    end
+
+    # @param input [#to_s]
+    # @return [String]
+    def self.byte_string_from_string(input)
+      byte_string_from_hex_bytes(
+        hex_bytes_from_string(input),
+      )
     end
   end
 end
