@@ -18,11 +18,11 @@ module Xpring
     # @return [Xpring::Wallet]
     def self.from_mnemonic(mnemonic, derivation_path: nil, test: false)
       result = Javascript.run do
-        <<-JAVASCRIPT
-        EntryPoint.Wallet.generateWalletFromMnemonic(
+        <<~JAVASCRIPT
+        #{Javascript::ENTRY_POINT}.Wallet.generateWalletFromMnemonic(
           '#{mnemonic.to_s}',
           '#{derivation_path&.to_s}' ||
-            EntryPoint.Wallet.getDefaultDerivationPath(),
+            #{Javascript::ENTRY_POINT}.Wallet.getDefaultDerivationPath(),
           #{test},
         );
         JAVASCRIPT
@@ -38,11 +38,11 @@ module Xpring
     # @return [Xpring::Wallet]
     def self.from_seed(seed, deriviation_path: nil, test: false)
       result = Javascript.run do
-        <<-JAVASCRIPT
-        EntryPoint.Wallet.generateHDWalletFromSeed(
+        <<~JAVASCRIPT
+        #{Javascript::ENTRY_POINT}.Wallet.generateHDWalletFromSeed(
           '#{seed.to_s}',
           '#{derivation_path&.to_s}' ||
-            EntryPoint.Wallet.getDefaultDerivationPath(),
+            #{Javascript::ENTRY_POINT}.Wallet.getDefaultDerivationPath(),
           #{test},
         );
         JAVASCRIPT
@@ -67,7 +67,7 @@ module Xpring
     # @return [String]
     def address
       @address ||= Javascript.run do
-        <<-JAVASCRIPT
+        <<~JAVASCRIPT
         #{inject_wallet_as("wallet")}
         wallet.getAddress();
         JAVASCRIPT
@@ -79,7 +79,7 @@ module Xpring
     # @return [String]
     def sign(input)
       signed = Javascript.run do
-        <<-JAVASCRIPT
+        <<~JAVASCRIPT
         #{inject_wallet_as("wallet")}
         wallet.sign('#{input.to_s}');
         JAVASCRIPT
@@ -93,18 +93,18 @@ module Xpring
     # @return [true, false]
     def valid?(message, signature)
       Javascript.run do
-        <<-JAVASCRIPT
+        <<~JAVASCRIPT
         #{inject_wallet_as("wallet")}
         wallet.verify('#{message.to_s}', '#{signature.to_s}');
         JAVASCRIPT
       end == true
     end
 
-    private
 
+    # TODO - this needs to be private
     def inject_wallet_as(var_name)
-      <<-JAVASCRIPT
-      const #{var_name} = new EntryPoint.Wallet(
+      <<~JAVASCRIPT
+      const #{var_name} = new #{Javascript::ENTRY_POINT}.Wallet(
         '#{public_key}',
         '#{private_key}',
         #{test},
