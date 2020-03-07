@@ -50,11 +50,6 @@ module Xpring
       new(result[:publicKey], result[:privateKey], result[:test])
     end
 
-    # @raise [NotImplementedError]
-    def self.random
-      raise NotImplementedError.new("Not compatible with node")
-    end
-
     # @param public_key [#to_s]
     # @param private_key [#to_s]
     # @param test [true, false]
@@ -68,8 +63,7 @@ module Xpring
     def address
       @address ||= Javascript.run do
         <<~JAVASCRIPT
-        const wallet = #{to_javascript};
-        wallet.getAddress();
+        #{to_javascript}.getAddress();
         JAVASCRIPT
       end
     end
@@ -80,8 +74,7 @@ module Xpring
     def sign(input)
       signed = Javascript.run do
         <<~JAVASCRIPT
-        const wallet = #{to_javascript};
-        wallet.sign('#{input.to_s}');
+        #{to_javascript}.sign('#{input.to_s}');
         JAVASCRIPT
       end
       raise Error.new(SIGN_ERROR_MSG) if signed.nil?
@@ -94,8 +87,7 @@ module Xpring
     def valid?(message, signature)
       Javascript.run do
         <<~JAVASCRIPT
-        const wallet = #{to_javascript};
-        wallet.verify('#{message.to_s}', '#{signature.to_s}');
+        #{to_javascript}.verify('#{message.to_s}', '#{signature.to_s}');
         JAVASCRIPT
       end == true
     end

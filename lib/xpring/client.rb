@@ -34,8 +34,6 @@ module Xpring
 
     # @param transaction [#to_s]
     # @return [Symbol, nil]
-    # TODO - maybe transaction should be a class, should allow for returning
-    # specific result and result type
     def status_of(transaction)
       transaction_data(transaction.to_s)&.meta&.transaction_result&.result_type
     end
@@ -71,13 +69,11 @@ module Xpring
         TransactionType: "Payment",
       }
 
-      signed_transaction = Signer.sign(
-        transaction_hash: transaction_hash,
-        from_wallet: from,
-      )
-
       client.submit_transaction(Org::Xrpl::Rpc::V1::SubmitTransactionRequest.new(
-        signed_transaction: signed_transaction,
+        signed_transaction: Signer.sign(
+          transaction_hash: transaction_hash,
+          from_wallet: from,
+        ),
       ))
     end
 
