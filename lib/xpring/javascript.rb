@@ -12,6 +12,7 @@ module Xpring
     # @return [Hash<Symbol, Object>, String, nil]
     def self.run
       script = prepare(yield)
+      Xpring.debug_log(script)
       raw = IO.popen("node -p #{script.dump}") do |io|
         io.readlines
       end.first&.strip
