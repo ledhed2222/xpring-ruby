@@ -2,14 +2,21 @@
 
 require "bundler/gem_tasks"
 require "rspec/core/rake_task"
+require "rubocop/rake_task"
 
 RSpec::Core::RakeTask.new(:spec)
 
-task :default => :spec
+RuboCop::RakeTask.new
+
+task default: :spec
 
 task :build_proto do
   `git submodule update --remote rippled`
-  `grpc_tools_ruby_protoc --proto_path=./rippled/src/ripple/proto --ruby_out=lib --grpc_out=lib ./rippled/src/ripple/proto/org/xrpl/rpc/v1/*.proto`
+  `grpc_tools_ruby_protoc \
+    --proto_path=./rippled/src/ripple/proto \
+    --ruby_out=lib \
+    --grpc_out=lib \
+    ./rippled/src/ripple/proto/org/xrpl/rpc/v1/*.proto`
 end
 
 task :build_js do
@@ -23,5 +30,4 @@ task :build_js do
 end
 
 desc "Build dependencies"
-task :build_dependencies => [:build_proto, :build_js]
-
+task build_dependencies: [:build_proto, :build_js]
