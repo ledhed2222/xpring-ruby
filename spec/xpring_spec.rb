@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe Xpring do
   it "has a version number" do
     expect(Xpring::VERSION).not_to be nil

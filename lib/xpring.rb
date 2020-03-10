@@ -6,20 +6,22 @@ require "xpring/util"
 require "xpring/client"
 require "xpring/error"
 
+# Entrypoint of library
 module Xpring
-  @@debug = false
+  @debug = false
 
   # @return [true, false]
   def self.debug?
-    @@debug
+    @debug
   end
 
   # @param value [true, false]
   # @raise [TypeError]
   # @return [true, false]
   def self.debug=(value)
-    raise TypeError if ![true, false].include?(value)
-    @@debug = value
+    raise TypeError unless [true, false].include?(value)
+
+    @debug = value
   end
 
   # @param value [#to_s]
@@ -28,4 +30,3 @@ module Xpring
     puts value if debug?
   end
 end
-

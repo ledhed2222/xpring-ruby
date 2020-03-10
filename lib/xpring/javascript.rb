@@ -3,9 +3,10 @@
 require "json"
 
 module Xpring
+  # Basic Ruby to Javascript interop
   module Javascript
     ENTRY_POINT = "XpringCommonJS"
-    LIBRARY_PATH = File.expand_path("../../../ext/xpring/xpring.js", __FILE__)
+    LIBRARY_PATH = File.expand_path("../../ext/xpring/xpring.js", __dir__)
     private_constant :LIBRARY_PATH
 
     # @yieldreturn [String]
@@ -13,9 +14,7 @@ module Xpring
     def self.run
       script = prepare(yield)
       Xpring.debug_log(script)
-      raw = IO.popen("node -p #{script.dump}") do |io|
-        io.readlines
-      end.first&.strip
+      raw = IO.popen("node -p #{script.dump}", &:readlines).first&.strip
       parse(raw)
     end
 
@@ -49,10 +48,9 @@ module Xpring
 
     def self.inject_library
       <<~JAVASCRIPT
-      const #{ENTRY_POINT} = require('#{LIBRARY_PATH}');
+        const #{ENTRY_POINT} = require('#{LIBRARY_PATH}');
       JAVASCRIPT
     end
     private_class_method :inject_library
   end
 end
-

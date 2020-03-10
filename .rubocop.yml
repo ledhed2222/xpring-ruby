@@ -1,0 +1,38 @@
+AllCops:
+  Exclude:
+    - lib/org/**/*
+    - rippled/**/*
+    - xpring-common-js/**/*
+  TargetRubyVersion: 2.3
+Layout/FirstArgumentIndentation:
+  Enabled: true
+  EnforcedStyle: consistent
+Layout/LineLength:
+  Enabled: true
+  Max: 100
+Lint/SuppressedException:
+  Enabled: false
+Style/HashEachMethods:
+  Enabled: true
+Style/HashTransformKeys:
+  Enabled: true
+Style/HashTransformValues:
+  Enabled: true
+Style/RaiseArgs:
+  Enabled: true
+  EnforcedStyle: compact
+Style/StringLiterals:
+  Enabled: true
+  EnforcedStyle: double_quotes
+Style/SymbolArray:
+  Enabled: true
+  EnforcedStyle: brackets
+Style/TrailingCommaInArguments:
+  Enabled: true
+  EnforcedStyleForMultiline: comma
+Style/TrailingCommaInArrayLiteral:
+  Enabled: true
+  EnforcedStyleForMultiline: comma
+Style/TrailingCommaInHashLiteral:
+  Enabled: true
+  EnforcedStyleForMultiline: comma

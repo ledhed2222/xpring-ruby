@@ -4,6 +4,7 @@ require "xpring/javascript"
 require "xpring/error"
 
 module Xpring
+  # Representation of a XRP wallet
   class Wallet
     INVALID_MNEMONIC_OR_DERIVATION_PATH_MSG = "Invalid mnemonic or derivation path"
     SIGN_ERROR_MSG = "Could not sign input"
@@ -19,16 +20,17 @@ module Xpring
     def self.from_mnemonic(mnemonic, derivation_path: nil, test: false)
       result = Javascript.run do
         <<~JAVASCRIPT
-        #{Javascript::ENTRY_POINT}.Wallet.generateWalletFromMnemonic(
-          '#{mnemonic.to_s}',
-          '#{derivation_path&.to_s}' ||
-            #{Javascript::ENTRY_POINT}.Wallet.getDefaultDerivationPath(),
-          #{test},
-        );
+          #{Javascript::ENTRY_POINT}.Wallet.generateWalletFromMnemonic(
+            '#{mnemonic}',
+            '#{derivation_path&.to_s}' ||
+              #{Javascript::ENTRY_POINT}.Wallet.getDefaultDerivationPath(),
+            #{test},
+          );
         JAVASCRIPT
       end
 
       raise Error.new(INVALID_MNEMONIC_OR_DERIVATION_PATH_MSG) if result.nil?
+
       new(result[:publicKey], result[:privateKey], result[:test])
     end
 
@@ -36,15 +38,15 @@ module Xpring
     # @param derivation_path [#to_s, nil]
     # @param test [true, false]
     # @return [Xpring::Wallet]
-    def self.from_seed(seed, deriviation_path: nil, test: false)
+    def self.from_seed(seed, derivation_path: nil, test: false)
       result = Javascript.run do
         <<~JAVASCRIPT
-        #{Javascript::ENTRY_POINT}.Wallet.generateHDWalletFromSeed(
-          '#{seed.to_s}',
-          '#{derivation_path&.to_s}' ||
-            #{Javascript::ENTRY_POINT}.Wallet.getDefaultDerivationPath(),
-          #{test},
-        );
+          #{Javascript::ENTRY_POINT}.Wallet.generateHDWalletFromSeed(
+            '#{seed}',
+            '#{derivation_path&.to_s}' ||
+              #{Javascript::ENTRY_POINT}.Wallet.getDefaultDerivationPath(),
+            #{test},
+          );
         JAVASCRIPT
       end
       new(result[:publicKey], result[:privateKey], result[:test])
@@ -63,7 +65,7 @@ module Xpring
     def address
       @address ||= Javascript.run do
         <<~JAVASCRIPT
-        #{to_javascript}.getAddress();
+          #{to_javascript}.getAddress();
         JAVASCRIPT
       end
     end
@@ -74,10 +76,11 @@ module Xpring
     def sign(input)
       signed = Javascript.run do
         <<~JAVASCRIPT
-        #{to_javascript}.sign('#{input.to_s}');
+          #{to_javascript}.sign('#{input}');
         JAVASCRIPT
       end
       raise Error.new(SIGN_ERROR_MSG) if signed.nil?
+
       signed
     end
 
@@ -87,7 +90,7 @@ module Xpring
     def valid?(message, signature)
       Javascript.run do
         <<~JAVASCRIPT
-        #{to_javascript}.verify('#{message.to_s}', '#{signature.to_s}');
+          #{to_javascript}.verify('#{message}', '#{signature}');
         JAVASCRIPT
       end == true
     end
@@ -95,13 +98,12 @@ module Xpring
     # @return [String] Javascript constructor expression for this Wallet
     def to_javascript
       <<~JAVASCRIPT
-      new #{Javascript::ENTRY_POINT}.Wallet(
-        '#{public_key}',
-        '#{private_key}',
-        #{test},
-      )
+        new #{Javascript::ENTRY_POINT}.Wallet(
+          '#{public_key}',
+          '#{private_key}',
+          #{test},
+        )
       JAVASCRIPT
     end
   end
 end
-
