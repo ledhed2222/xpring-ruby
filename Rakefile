@@ -15,6 +15,8 @@ task build: :"build:dependencies"
 
 namespace :build do
   task :proto do
+    before_dir = Dir.pwd
+    Dir.chdir(__dir__)
     `git submodule update --remote rippled`
     proto_dir = File.expand_path("./rippled/src/ripple/proto", __dir__)
     proto_path = File.expand_path("./rippled/src/ripple/proto/org/xrpl/rpc/v1/*.proto", __dir__)
@@ -24,11 +26,13 @@ namespace :build do
       --ruby_out=#{lib_path} \
       --grpc_out=#{lib_path} \
       #{proto_path}`
+    Dir.chdir(before_dir)
   end
 
   task :js do
-    `git submodule update --remote xpring-common-js`
     before_dir = Dir.pwd
+    Dir.chdir(__dir__)
+    `git submodule update --remote xpring-common-js`
     Dir.chdir(File.expand_path("./xpring-common-js", __dir__))
     `npm i`
     `npm run webpack`
@@ -38,6 +42,13 @@ namespace :build do
     Dir.chdir(before_dir)
   end
 
+  task :documentation do
+    before_dir = Dir.pwd
+    Dir.chdir(__dir__)
+    `yard doc --exclude lib/org/* lib/**/*`
+    Dir.chdir(before_dir)
+  end
+
   desc "Build dependencies"
-  task dependencies: [:proto, :js]
+  task dependencies: [:proto, :js, :documentation]
 end

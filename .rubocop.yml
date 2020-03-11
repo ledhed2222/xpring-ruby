@@ -15,6 +15,7 @@ Lint/SuppressedException:
 Metrics/BlockLength:
   Enabled: true
   Exclude:
+    - Rakefile
     - spec/**/*
 Style/HashEachMethods:
   Enabled: true

@@ -46,6 +46,7 @@ GEM
       unicode-display_width (>= 1.4.0, < 1.7)
     ruby-progressbar (1.10.1)
     unicode-display_width (1.6.1)
+    yard (0.9.24)
 
 PLATFORMS
   ruby
@@ -57,6 +58,7 @@ DEPENDENCIES
   rspec (~> 3.0)
   rubocop
   xpring!
+  yard
 
 BUNDLED WITH
    2.1.4
