@@ -15,13 +15,9 @@ module Xpring
     @debug
   end
 
-  # @param value [true, false]
-  # @raise [TypeError]
   # @return [true, false]
-  def self.debug=(value)
-    raise TypeError unless [true, false].include?(value)
-
-    @debug = value
+  def self.toggle_debug!
+    @debug = !@debug
   end
 
   # @param value [#to_s]

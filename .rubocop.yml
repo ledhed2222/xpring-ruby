@@ -12,6 +12,10 @@ Layout/LineLength:
   Max: 100
 Lint/SuppressedException:
   Enabled: false
+Metrics/BlockLength:
+  Enabled: true
+  Exclude:
+    - spec/**/*
 Style/HashEachMethods:
   Enabled: true
 Style/HashTransformKeys:

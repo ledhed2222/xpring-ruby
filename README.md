@@ -41,10 +41,6 @@ The gem is available as open source under the terms of the [MIT License](https:/
 
 # TODO
 
-- tx status...
-- sending xrp
-- what is the compilation story for this gem?
 - grpc deadlines?
 - tests
-- rubocop?
 - ruby docs
