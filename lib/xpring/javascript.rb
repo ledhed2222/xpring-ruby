@@ -6,8 +6,7 @@ module Xpring
   # Basic Ruby to Javascript interop
   module Javascript
     ENTRY_POINT = "XpringCommonJS"
-    LIBRARY_PATH = File.expand_path("../../ext/xpring/xpring.js", __dir__)
-    private_constant :LIBRARY_PATH
+    LIBRARY_PATH = File.expand_path("./javascript/library.js", __dir__)
 
     # @yieldreturn [String]
     # @return [Hash<Symbol, Object>, String, nil]
