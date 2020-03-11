@@ -21,7 +21,8 @@ module Xpring
     attr_reader :grpc_url, :credentials
 
     # @param grpc_url [#to_s]
-    # @param credentials TODO
+    # @param credentials [GRPC::Core::ChannelCredentials,
+    #   :this_channel_is_insecure]
     def initialize(grpc_url, credentials: :this_channel_is_insecure)
       @grpc_url = grpc_url.to_s
       @credentials = credentials
