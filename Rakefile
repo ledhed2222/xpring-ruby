@@ -45,7 +45,7 @@ namespace :build do
   task :documentation do
     before_dir = Dir.pwd
     Dir.chdir(__dir__)
-    `yard doc --exclude lib/org/* lib/**/*`
+    `yard doc --exclude lib/org/* lib/*`
     Dir.chdir(before_dir)
   end
 
