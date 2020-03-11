@@ -13,10 +13,9 @@ RSpec.describe Xpring do
 
   describe "::toggle_debug!" do
     it "changes the value of ::debug" do
-      prior = Xpring.debug?
       expect do
         Xpring.toggle_debug!
-      end.to change { Xpring.debug? }.to(!prior)
+      end.to change { Xpring.debug? }.to(!Xpring.debug?)
     end
   end
 
@@ -31,7 +30,7 @@ RSpec.describe Xpring do
       it "prints to STDOUT" do
         expect do
           Xpring.debug_log(message)
-        end.to output(message).to_stdout
+        end.to output(Regexp.new(message)).to_stdout
       end
     end
 
