@@ -52,10 +52,10 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  bundler (~> 2.0)
+  bundler
   grpc-tools
   rake (>= 12.3.3)
-  rspec (~> 3.0)
+  rspec
   rubocop
   xpring!
   yard
