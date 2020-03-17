@@ -7,6 +7,10 @@ module Xpring
   module Javascript
     ENTRY_POINT = "XpringCommonJS"
     LIBRARY_PATH = File.expand_path("./javascript/library.js", __dir__)
+    LIBRARY_INJECTION_EXPRESSION = <<~JAVASCRIPT
+      const #{ENTRY_POINT} = require('#{LIBRARY_PATH}');
+    JAVASCRIPT
+    private_constant :LIBRARY_INJECTION_EXPRESSION
 
     # @yieldreturn [String]
     # @return [Hash<Symbol, Object>, String, nil]
@@ -31,12 +35,22 @@ module Xpring
     private_class_method :parse
 
     def self.prepare(script)
-      [
-        inject_library,
-        add_stringify_to(script),
-      ].join.strip.tr("\"", "\\\"").tr("\n", "")
+      sanitize(raw_script_given(script))
     end
     private_class_method :prepare
+
+    def self.sanitize(script)
+      script.strip.tr("\"", "\\\"").gsub(/[\n\r]/, "").gsub(/\s{2,}/, "")
+    end
+    private_class_method :sanitize
+
+    def self.raw_script_given(script)
+      [
+        LIBRARY_INJECTION_EXPRESSION,
+        add_stringify_to(script),
+      ].join
+    end
+    private_class_method :raw_script_given
 
     def self.add_stringify_to(script)
       script.strip.split(";").tap do |script_array|
@@ -44,12 +58,5 @@ module Xpring
       end.join(";").concat(";")
     end
     private_class_method :add_stringify_to
-
-    def self.inject_library
-      <<~JAVASCRIPT
-        const #{ENTRY_POINT} = require('#{LIBRARY_PATH}');
-      JAVASCRIPT
-    end
-    private_class_method :inject_library
   end
 end
