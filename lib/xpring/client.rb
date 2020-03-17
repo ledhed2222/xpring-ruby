@@ -113,12 +113,8 @@ module Xpring
     rescue GRPC::NotFound
     end
 
-    def last_validated_ledger_sequence
-      fee_response.ledger_current_index
-    end
-
     def next_sequence_for_transaction
-      last_validated_ledger_sequence + MAX_LEDGER_VERSION_OFFSET
+      fee_response.ledger_current_index + MAX_LEDGER_VERSION_OFFSET
     end
   end
 end
