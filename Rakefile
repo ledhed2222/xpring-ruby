@@ -11,13 +11,34 @@ RuboCop::RakeTask.new
 
 task default: :spec
 
-task build: :"build:dependencies"
+namespace :clean do
+  task :proto do
+    proto_source_path = File.expand_path("./rippled", __dir__)
+    FileUtils.rm_rf(proto_source_path)
+    proto_dest_path = File.expand_path("./lib/org", __dir__)
+    FileUtils.rm_rf(proto_dest_path)
+  end
+
+  task :js do
+    js_path = File.expand_path("./xpring-common-js", __dir__)
+    FileUtils.rm_rf(js_path)
+    FileUtils.rm_f(Xpring::Javascript::LIBRARY_PATH)
+  end
+
+  task :doc do
+    doc_path = File.expand_path("./doc", __dir__)
+    FileUtils.rm_rf(doc_path)
+  end
+
+  desc "Clean dependencies"
+  task dependencies: [:proto, :js, :doc]
+end
 
 namespace :build do
   task :proto do
     before_dir = Dir.pwd
     Dir.chdir(__dir__)
-    `git submodule update --remote rippled`
+    `git submodule update --remote --init --recursive rippled`
     proto_dir = File.expand_path("./rippled/src/ripple/proto", __dir__)
     proto_path = File.expand_path("./rippled/src/ripple/proto/org/xrpl/rpc/v1/*.proto", __dir__)
     lib_path = File.expand_path("./lib", __dir__)
@@ -32,7 +53,7 @@ namespace :build do
   task :js do
     before_dir = Dir.pwd
     Dir.chdir(__dir__)
-    `git submodule update --remote xpring-common-js`
+    `git submodule update --remote --init --recursive xpring-common-js`
     Dir.chdir(File.expand_path("./xpring-common-js", __dir__))
     `npm i`
     `npm run webpack`
@@ -42,7 +63,7 @@ namespace :build do
     Dir.chdir(before_dir)
   end
 
-  task :documentation do
+  task :doc do
     before_dir = Dir.pwd
     Dir.chdir(__dir__)
     `yard doc --exclude lib/org/* lib/*`
@@ -50,5 +71,8 @@ namespace :build do
   end
 
   desc "Build dependencies"
-  task dependencies: [:proto, :js, :documentation]
+  task dependencies: [:proto, :js, :doc]
 end
+
+task build: :"build:dependencies"
+task clean: :"clean:dependencies"
