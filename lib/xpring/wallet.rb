@@ -35,16 +35,13 @@ module Xpring
     end
 
     # @param seed [#to_s]
-    # @param derivation_path [#to_s, nil]
     # @param test [true, false]
     # @return [Xpring::Wallet]
-    def self.from_seed(seed, derivation_path: nil, test: false)
+    def self.from_seed(seed, test: false)
       result = Javascript.run do
         <<~JAVASCRIPT
-          #{Javascript::ENTRY_POINT}.Wallet.generateHDWalletFromSeed(
+          #{Javascript::ENTRY_POINT}.Wallet.generateWalletFromSeed(
             '#{seed}',
-            '#{derivation_path&.to_s}' ||
-              #{Javascript::ENTRY_POINT}.Wallet.getDefaultDerivationPath(),
             #{test},
           );
         JAVASCRIPT
