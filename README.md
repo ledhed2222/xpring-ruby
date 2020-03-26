@@ -122,7 +122,7 @@ bitcoin_address = "1DiqLtKZZviDxccRpowkhVowsbLSNQWBE8"
 
 Xpring::Util.valid_x_address?(classic_address)    # false
 Xpring::Util.valid_x_address?(x_address)          # true
-Xpring::Util.valid_x_address?(bitcoin_address)   # false
+Xpring::Util.valid_x_address?(bitcoin_address)    # false
 
 Xpring::Util.valid_classic_address?(classic_address)  # true
 Xpring::Util.valid_classic_address?(x_address)        # false
@@ -172,5 +172,5 @@ The gem is available as open source under the terms of the [MIT License](https:/
 
 # TODO
 
-- grpc deadlines?
+- grpc deadlines
 - tests
