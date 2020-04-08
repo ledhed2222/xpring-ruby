@@ -7,7 +7,7 @@ Gem::Specification.new do |spec|
   spec.version       = Xpring::VERSION
   spec.authors       = ["Greg Weisbrod"]
   spec.email         = ["greg.weisbrod@gmail.com"]
-  spec.required_ruby_version = [">= 2.3", "< 2.7.0"]
+  spec.required_ruby_version = [">= 2.3", "!= 2.7.0"]
 
   spec.summary       = "A Ruby SDK for the XRP ledger"
   spec.homepage      = "https://github.com/ledhed2222/xpring-ruby"
