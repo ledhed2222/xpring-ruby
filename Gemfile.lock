@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    xpring (0.1.0)
+    xpring (0.1.1)
       grpc (~> 1.26)
 
 GEM
@@ -9,10 +9,10 @@ GEM
   specs:
     ast (2.4.0)
     diff-lcs (1.3)
-    google-protobuf (3.11.3)
+    google-protobuf (3.11.3-universal-darwin)
     googleapis-common-protos-types (1.0.4)
       google-protobuf (~> 3.0)
-    grpc (1.26.0)
+    grpc (1.26.0-universal-darwin)
       google-protobuf (~> 3.8)
       googleapis-common-protos-types (~> 1.0)
     grpc-tools (1.26.0)
