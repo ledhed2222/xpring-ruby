@@ -14,18 +14,22 @@ require "org/xrpl/rpc/v1/get_fee_pb"
 module Xpring
   # Make GRPC network calls to XRP ledger
   class Client
+    DEFAULT_DEADLINE_OFFSET = 60
     MAX_LEDGER_VERSION_OFFSET = 10
     X_ADDRESS_REQUIRED_MSG = "Please use the X-Address format. See: https://xrpaddress.info"
     private_constant :MAX_LEDGER_VERSION_OFFSET, :X_ADDRESS_REQUIRED_MSG
 
-    attr_reader :grpc_url, :credentials
+    attr_reader :grpc_url, :credentials, :deadline_offset
 
     # @param grpc_url [#to_s]
     # @param credentials [GRPC::Core::ChannelCredentials,
     #   :this_channel_is_insecure]
-    def initialize(grpc_url, credentials: :this_channel_is_insecure)
+    # @param deadline_offset [Integer, nil] how many seconds each network call
+    #   is allowed to take
+    def initialize(grpc_url, credentials: :this_channel_is_insecure, deadline_offset: nil)
       @grpc_url = grpc_url.to_s
       @credentials = credentials
+      @deadline_offset = deadline_offset || DEFAULT_DEADLINE_OFFSET
     end
 
     # @param address [#to_s] classic address
@@ -82,6 +86,10 @@ module Xpring
 
     private
 
+    def deadline
+      Time.now + deadline_offset
+    end
+
     def client
       @client ||= Org::Xrpl::Rpc::V1::XRPLedgerAPIService::Stub.new(
         grpc_url,
@@ -90,7 +98,8 @@ module Xpring
     end
 
     def fee_response
-      client.get_fee(Org::Xrpl::Rpc::V1::GetFeeRequest.new)
+      client.get_fee(Org::Xrpl::Rpc::V1::GetFeeRequest.new, deadline: deadline)
+    rescue GRPC::DeadlineExceeded
     end
 
     def minimum_fee
@@ -98,19 +107,25 @@ module Xpring
     end
 
     def account_data(address)
-      client.get_account_info(Org::Xrpl::Rpc::V1::GetAccountInfoRequest.new(
-        account: Org::Xrpl::Rpc::V1::AccountAddress.new(
-          address: address,
+      client.get_account_info(
+        Org::Xrpl::Rpc::V1::GetAccountInfoRequest.new(
+          account: Org::Xrpl::Rpc::V1::AccountAddress.new(
+            address: address,
+          ),
         ),
-      ))
-    rescue GRPC::NotFound
+        deadline: deadline,
+      )
+    rescue GRPC::NotFound, GRPC::DeadlineExceeded
     end
 
     def transaction_data(transaction)
-      client.get_transaction(Org::Xrpl::Rpc::V1::GetTransactionRequest.new(
-        hash: Util.byte_string_from_string(transaction),
-      ))
-    rescue GRPC::NotFound
+      client.get_transaction(
+        Org::Xrpl::Rpc::V1::GetTransactionRequest.new(
+          hash: Util.byte_string_from_string(transaction),
+        ),
+        deadline: deadline,
+      )
+    rescue GRPC::NotFound, GRPC::DeadlineExceeded
     end
 
     def next_sequence_for_transaction
