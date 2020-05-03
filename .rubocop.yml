@@ -17,6 +17,12 @@ Metrics/BlockLength:
   Exclude:
     - Rakefile
     - spec/**/*
+Metrics/ClassLength:
+  Enabled: true
+  Max: 200
+Metrics/MethodLength:
+  Enabled: true
+  Max: 20
 Style/HashEachMethods:
   Enabled: true
 Style/HashTransformKeys:
