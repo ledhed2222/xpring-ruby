@@ -24,12 +24,16 @@ module Xpring
     # @param grpc_url [#to_s]
     # @param credentials [GRPC::Core::ChannelCredentials,
     #   :this_channel_is_insecure]
-    # @param deadline_offset [Integer, nil] how many seconds each network call
+    # @param deadline_offset [Integer] how many seconds each network call
     #   is allowed to take
-    def initialize(grpc_url, credentials: :this_channel_is_insecure, deadline_offset: nil)
+    def initialize(
+      grpc_url,
+      credentials: :this_channel_is_insecure,
+      deadline_offset: DEFAULT_DEADLINE_OFFSET
+    )
       @grpc_url = grpc_url.to_s
       @credentials = credentials
-      @deadline_offset = deadline_offset || DEFAULT_DEADLINE_OFFSET
+      @deadline_offset = deadline_offset
     end
 
     # @param address [#to_s] classic address
@@ -50,21 +54,10 @@ module Xpring
     # @param to [#to_s]
     # @param from [Xpring::Wallet]
     # @raise [Xpring::Error]
-    # @return [Org::Xrpl::Rpc::V1::SubmitTransactionResponse]
+    # @return [Org::Xrpl::Rpc::V1::SubmitTransactionResponse, nil]
     def send_xrp(amount:, to:, from:)
-      to = to.to_s
-
-      raise Error.new(X_ADDRESS_REQUIRED_MSG) unless Util.valid_x_address?(to)
-
-      classic_from_address = Util.decode(from.address)[:address]
-      raise Error.new(X_ADDRESS_REQUIRED_MSG) unless classic_from_address
-
-      classic_to_address = Util.decode(to)[:address]
-      raise Error.new(X_ADDRESS_REQUIRED_MSG) unless classic_to_address
-
-      account_data = account_data(classic_from_address)
-      raise Error.new(X_ADDRESS_REQUIRED_MSG) if account_data.nil?
-
+      classic_from_address, classic_to_address, account_data =
+        validate_and_prepare_sending_xrp(to.to_s, from)
       transaction_hash = {
         Account: classic_from_address,
         Fee: minimum_fee.to_s, # ripple-binary-codec requires string
@@ -75,16 +68,28 @@ module Xpring
         Destination: classic_to_address,
         TransactionType: "Payment",
       }
-
-      client.submit_transaction(Org::Xrpl::Rpc::V1::SubmitTransactionRequest.new(
-        signed_transaction: Signer.sign(
-          transaction_hash: transaction_hash,
-          from_wallet: from,
-        ),
-      ))
+      submit_transaction(from_wallet: from, transaction_hash: transaction_hash)
     end
 
     private
+
+    def validate_and_prepare_sending_xrp(to_address, from_wallet)
+      raise Error.new(X_ADDRESS_REQUIRED_MSG) unless Util.valid_x_address?(to_address)
+
+      classic_from_address = Util.decode(from_wallet.address)[:address]
+      classic_to_address = Util.decode(to_address)[:address]
+      account_data = account_data(classic_from_address)
+
+      unless classic_from_address && classic_to_address && account_data
+        raise Error.new(X_ADDRESS_REQUIRED_MSG)
+      end
+
+      [
+        classic_from_address,
+        classic_to_address,
+        account_data,
+      ]
+    end
 
     def deadline
       Time.now + deadline_offset
@@ -126,6 +131,19 @@ module Xpring
         deadline: deadline,
       )
     rescue GRPC::NotFound, GRPC::DeadlineExceeded
+    end
+
+    def submit_transaction(from_wallet:, transaction_hash:)
+      client.submit_transaction(
+        Org::Xrpl::Rpc::V1::SubmitTransactionRequest.new(
+          signed_transaction: Signer.sign(
+            transaction_hash: transaction_hash,
+            from_wallet: from_wallet,
+          ),
+        ),
+        deadline: deadline,
+      )
+    rescue GRPC::DeadlineExceeded
     end
 
     def next_sequence_for_transaction
