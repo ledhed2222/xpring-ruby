@@ -46,6 +46,8 @@ module Xpring
           );
         JAVASCRIPT
       end
+      raise Error.new(INVALID_MNEMONIC_OR_DERIVATION_PATH_MSG) if result.nil?
+
       new(result[:publicKey], result[:privateKey], result[:test])
     end
 
