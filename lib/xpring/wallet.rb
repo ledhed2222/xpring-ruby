@@ -36,6 +36,7 @@ module Xpring
 
     # @param seed [#to_s]
     # @param test [true, false]
+    # @raise [Xpring::Error]
     # @return [Xpring::Wallet]
     def self.from_seed(seed, test: false)
       result = Javascript.run do
@@ -46,6 +47,8 @@ module Xpring
           );
         JAVASCRIPT
       end
+      raise Error.new(INVALID_MNEMONIC_OR_DERIVATION_PATH_MSG) if result.nil?
+
       new(result[:publicKey], result[:privateKey], result[:test])
     end
 

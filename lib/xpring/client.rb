@@ -44,6 +44,7 @@ module Xpring
     end
 
     # @param transaction [#to_s]
+    # @raise [GRPC::InvalidArgument]
     # @return [Symbol, nil]
     def status_of(transaction)
       transaction_data(transaction.to_s)&.meta
