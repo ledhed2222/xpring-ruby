@@ -36,6 +36,7 @@ module Xpring
 
     # @param seed [#to_s]
     # @param test [true, false]
+    # @raise [Xpring::Error]
     # @return [Xpring::Wallet]
     def self.from_seed(seed, test: false)
       result = Javascript.run do
