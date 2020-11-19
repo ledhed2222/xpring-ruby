@@ -20,6 +20,7 @@ Google::Protobuf::DescriptorPool.generated_pool.build do
       repeated :memos, :message, 10, "org.xrpl.rpc.v1.Memo"
       repeated :signers, :message, 11, "org.xrpl.rpc.v1.Signer"
       optional :account_transaction_id, :message, 12, "org.xrpl.rpc.v1.AccountTransactionID"
+      optional :ticket_sequence, :message, 31, "org.xrpl.rpc.v1.TicketSequence"
       oneof :transaction_data do
         optional :payment, :message, 4, "org.xrpl.rpc.v1.Payment"
         optional :account_set, :message, 13, "org.xrpl.rpc.v1.AccountSet"
@@ -38,6 +39,7 @@ Google::Protobuf::DescriptorPool.generated_pool.build do
         optional :payment_channel_fund, :message, 26, "org.xrpl.rpc.v1.PaymentChannelFund"
         optional :set_regular_key, :message, 27, "org.xrpl.rpc.v1.SetRegularKey"
         optional :signer_list_set, :message, 28, "org.xrpl.rpc.v1.SignerListSet"
+        optional :ticket_create, :message, 30, "org.xrpl.rpc.v1.TicketCreate"
         optional :trust_set, :message, 29, "org.xrpl.rpc.v1.TrustSet"
       end
     end
@@ -158,6 +160,9 @@ Google::Protobuf::DescriptorPool.generated_pool.build do
       optional :signer_quorum, :message, 1, "org.xrpl.rpc.v1.SignerQuorum"
       repeated :signer_entries, :message, 2, "org.xrpl.rpc.v1.SignerEntry"
     end
+    add_message "org.xrpl.rpc.v1.TicketCreate" do
+      optional :count, :message, 1, "org.xrpl.rpc.v1.TicketCount"
+    end
     add_message "org.xrpl.rpc.v1.TrustSet" do
       optional :limit_amount, :message, 1, "org.xrpl.rpc.v1.LimitAmount"
       optional :quality_in, :message, 2, "org.xrpl.rpc.v1.QualityIn"
@@ -192,6 +197,7 @@ module Org
         PaymentChannelFund = Google::Protobuf::DescriptorPool.generated_pool.lookup("org.xrpl.rpc.v1.PaymentChannelFund").msgclass
         SetRegularKey = Google::Protobuf::DescriptorPool.generated_pool.lookup("org.xrpl.rpc.v1.SetRegularKey").msgclass
         SignerListSet = Google::Protobuf::DescriptorPool.generated_pool.lookup("org.xrpl.rpc.v1.SignerListSet").msgclass
+        TicketCreate = Google::Protobuf::DescriptorPool.generated_pool.lookup("org.xrpl.rpc.v1.TicketCreate").msgclass
         TrustSet = Google::Protobuf::DescriptorPool.generated_pool.lookup("org.xrpl.rpc.v1.TrustSet").msgclass
       end
     end

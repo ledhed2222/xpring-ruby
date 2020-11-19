@@ -10,6 +10,7 @@ module Org
       module V1
         module XRPLedgerAPIService
           # RPCs available to interact with the XRP Ledger.
+          # The gRPC API mimics the JSON API. Refer to xrpl.org for documentation
           class Service
 
             include GRPC::GenericService
@@ -26,6 +27,7 @@ module Org
             rpc :SubmitTransaction, SubmitTransactionRequest, SubmitTransactionResponse
             # Get the status of a transaction
             rpc :GetTransaction, GetTransactionRequest, GetTransactionResponse
+            # Get all validated transactions associated with a given account
             rpc :GetAccountTransactionHistory, GetAccountTransactionHistoryRequest, GetAccountTransactionHistoryResponse
           end
 
