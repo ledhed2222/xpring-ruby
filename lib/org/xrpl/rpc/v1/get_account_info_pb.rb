@@ -31,6 +31,10 @@ Google::Protobuf::DescriptorPool.generated_pool.build do
       optional :highest_sequence, :uint32, 4
       optional :max_spend_drops_total, :message, 5, "org.xrpl.rpc.v1.XRPDropsAmount"
       repeated :transactions, :message, 6, "org.xrpl.rpc.v1.QueuedTransaction"
+      optional :lowest_ticket, :uint32, 7
+      optional :highest_ticket, :uint32, 8
+      optional :sequence_count, :uint32, 9
+      optional :ticket_count, :uint32, 10
     end
     add_message "org.xrpl.rpc.v1.QueuedTransaction" do
       optional :auth_change, :bool, 1
@@ -39,6 +43,7 @@ Google::Protobuf::DescriptorPool.generated_pool.build do
       optional :max_spend_drops, :message, 4, "org.xrpl.rpc.v1.XRPDropsAmount"
       optional :sequence, :message, 5, "org.xrpl.rpc.v1.Sequence"
       optional :last_ledger_sequence, :message, 6, "org.xrpl.rpc.v1.LastLedgerSequence"
+      optional :ticket, :message, 7, "org.xrpl.rpc.v1.Ticket"
     end
   end
 end

@@ -37,6 +37,9 @@ Google::Protobuf::DescriptorPool.generated_pool.build do
     add_message "org.xrpl.rpc.v1.HighQualityOut" do
       optional :value, :uint32, 1
     end
+    add_message "org.xrpl.rpc.v1.FirstLedgerSequence" do
+      optional :value, :uint32, 1
+    end
     add_message "org.xrpl.rpc.v1.LastLedgerSequence" do
       optional :value, :uint32, 1
     end
@@ -92,6 +95,15 @@ Google::Protobuf::DescriptorPool.generated_pool.build do
       optional :value, :uint32, 1
     end
     add_message "org.xrpl.rpc.v1.TickSize" do
+      optional :value, :uint32, 1
+    end
+    add_message "org.xrpl.rpc.v1.Ticket" do
+      optional :value, :uint32, 1
+    end
+    add_message "org.xrpl.rpc.v1.TicketCount" do
+      optional :value, :uint32, 1
+    end
+    add_message "org.xrpl.rpc.v1.TicketSequence" do
       optional :value, :uint32, 1
     end
     add_message "org.xrpl.rpc.v1.TransferRate" do
@@ -187,6 +199,12 @@ Google::Protobuf::DescriptorPool.generated_pool.build do
     add_message "org.xrpl.rpc.v1.TransactionSignature" do
       optional :value, :bytes, 1
     end
+    add_message "org.xrpl.rpc.v1.ValidatorToDisable" do
+      optional :value, :bytes, 1
+    end
+    add_message "org.xrpl.rpc.v1.ValidatorToReEnable" do
+      optional :value, :bytes, 1
+    end
     add_message "org.xrpl.rpc.v1.TakerGetsCurreny" do
       optional :value, :message, 1, "org.xrpl.rpc.v1.Currency"
     end
@@ -248,6 +266,10 @@ Google::Protobuf::DescriptorPool.generated_pool.build do
       optional :account, :message, 1, "org.xrpl.rpc.v1.Account"
       optional :signer_weight, :message, 2, "org.xrpl.rpc.v1.SignerWeight"
     end
+    add_message "org.xrpl.rpc.v1.DisabledValidator" do
+      optional :public_key, :message, 1, "org.xrpl.rpc.v1.PublicKey"
+      optional :ledger_sequence, :message, 2, "org.xrpl.rpc.v1.FirstLedgerSequence"
+    end
   end
 end
 
@@ -265,6 +287,7 @@ module Org
         Flags = Google::Protobuf::DescriptorPool.generated_pool.lookup("org.xrpl.rpc.v1.Flags").msgclass
         HighQualityIn = Google::Protobuf::DescriptorPool.generated_pool.lookup("org.xrpl.rpc.v1.HighQualityIn").msgclass
         HighQualityOut = Google::Protobuf::DescriptorPool.generated_pool.lookup("org.xrpl.rpc.v1.HighQualityOut").msgclass
+        FirstLedgerSequence = Google::Protobuf::DescriptorPool.generated_pool.lookup("org.xrpl.rpc.v1.FirstLedgerSequence").msgclass
         LastLedgerSequence = Google::Protobuf::DescriptorPool.generated_pool.lookup("org.xrpl.rpc.v1.LastLedgerSequence").msgclass
         LowQualityIn = Google::Protobuf::DescriptorPool.generated_pool.lookup("org.xrpl.rpc.v1.LowQualityIn").msgclass
         LowQualityOut = Google::Protobuf::DescriptorPool.generated_pool.lookup("org.xrpl.rpc.v1.LowQualityOut").msgclass
@@ -284,6 +307,9 @@ module Org
         SignerWeight = Google::Protobuf::DescriptorPool.generated_pool.lookup("org.xrpl.rpc.v1.SignerWeight").msgclass
         SourceTag = Google::Protobuf::DescriptorPool.generated_pool.lookup("org.xrpl.rpc.v1.SourceTag").msgclass
         TickSize = Google::Protobuf::DescriptorPool.generated_pool.lookup("org.xrpl.rpc.v1.TickSize").msgclass
+        Ticket = Google::Protobuf::DescriptorPool.generated_pool.lookup("org.xrpl.rpc.v1.Ticket").msgclass
+        TicketCount = Google::Protobuf::DescriptorPool.generated_pool.lookup("org.xrpl.rpc.v1.TicketCount").msgclass
+        TicketSequence = Google::Protobuf::DescriptorPool.generated_pool.lookup("org.xrpl.rpc.v1.TicketSequence").msgclass
         TransferRate = Google::Protobuf::DescriptorPool.generated_pool.lookup("org.xrpl.rpc.v1.TransferRate").msgclass
         BaseFee = Google::Protobuf::DescriptorPool.generated_pool.lookup("org.xrpl.rpc.v1.BaseFee").msgclass
         BookNode = Google::Protobuf::DescriptorPool.generated_pool.lookup("org.xrpl.rpc.v1.BookNode").msgclass
@@ -315,6 +341,8 @@ module Org
         PaymentChannelSignature = Google::Protobuf::DescriptorPool.generated_pool.lookup("org.xrpl.rpc.v1.PaymentChannelSignature").msgclass
         SigningPublicKey = Google::Protobuf::DescriptorPool.generated_pool.lookup("org.xrpl.rpc.v1.SigningPublicKey").msgclass
         TransactionSignature = Google::Protobuf::DescriptorPool.generated_pool.lookup("org.xrpl.rpc.v1.TransactionSignature").msgclass
+        ValidatorToDisable = Google::Protobuf::DescriptorPool.generated_pool.lookup("org.xrpl.rpc.v1.ValidatorToDisable").msgclass
+        ValidatorToReEnable = Google::Protobuf::DescriptorPool.generated_pool.lookup("org.xrpl.rpc.v1.ValidatorToReEnable").msgclass
         TakerGetsCurreny = Google::Protobuf::DescriptorPool.generated_pool.lookup("org.xrpl.rpc.v1.TakerGetsCurreny").msgclass
         TakerPaysCurrency = Google::Protobuf::DescriptorPool.generated_pool.lookup("org.xrpl.rpc.v1.TakerPaysCurrency").msgclass
         Amount = Google::Protobuf::DescriptorPool.generated_pool.lookup("org.xrpl.rpc.v1.Amount").msgclass
@@ -335,6 +363,7 @@ module Org
         Unauthorize = Google::Protobuf::DescriptorPool.generated_pool.lookup("org.xrpl.rpc.v1.Unauthorize").msgclass
         Domain = Google::Protobuf::DescriptorPool.generated_pool.lookup("org.xrpl.rpc.v1.Domain").msgclass
         SignerEntry = Google::Protobuf::DescriptorPool.generated_pool.lookup("org.xrpl.rpc.v1.SignerEntry").msgclass
+        DisabledValidator = Google::Protobuf::DescriptorPool.generated_pool.lookup("org.xrpl.rpc.v1.DisabledValidator").msgclass
       end
     end
   end

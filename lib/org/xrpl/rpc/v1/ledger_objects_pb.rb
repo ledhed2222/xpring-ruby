@@ -20,6 +20,8 @@ Google::Protobuf::DescriptorPool.generated_pool.build do
         optional :pay_channel, :message, 10, "org.xrpl.rpc.v1.PayChannel"
         optional :ripple_state, :message, 11, "org.xrpl.rpc.v1.RippleState"
         optional :signer_list, :message, 12, "org.xrpl.rpc.v1.SignerList"
+        optional :negative_unl, :message, 13, "org.xrpl.rpc.v1.NegativeUNL"
+        optional :ticket, :message, 14, "org.xrpl.rpc.v1.TicketObject"
       end
     end
     add_message "org.xrpl.rpc.v1.AccountRoot" do
@@ -37,6 +39,7 @@ Google::Protobuf::DescriptorPool.generated_pool.build do
       optional :regular_key, :message, 12, "org.xrpl.rpc.v1.RegularKey"
       optional :tick_size, :message, 13, "org.xrpl.rpc.v1.TickSize"
       optional :transfer_rate, :message, 14, "org.xrpl.rpc.v1.TransferRate"
+      optional :ticket_count, :message, 15, "org.xrpl.rpc.v1.TicketCount"
     end
     add_message "org.xrpl.rpc.v1.Amendments" do
       repeated :amendments, :message, 1, "org.xrpl.rpc.v1.Amendments.Amendment"
@@ -140,6 +143,7 @@ Google::Protobuf::DescriptorPool.generated_pool.build do
       optional :cancel_after, :message, 12, "org.xrpl.rpc.v1.CancelAfter"
       optional :source_tag, :message, 13, "org.xrpl.rpc.v1.SourceTag"
       optional :destination_tag, :message, 14, "org.xrpl.rpc.v1.DestinationTag"
+      optional :destination_node, :message, 15, "org.xrpl.rpc.v1.DestinationNode"
     end
     add_message "org.xrpl.rpc.v1.RippleState" do
       optional :balance, :message, 1, "org.xrpl.rpc.v1.Balance"
@@ -164,6 +168,20 @@ Google::Protobuf::DescriptorPool.generated_pool.build do
       optional :signer_list_id, :message, 6, "org.xrpl.rpc.v1.SignerListID"
       optional :signer_quorum, :message, 7, "org.xrpl.rpc.v1.SignerQuorum"
     end
+    add_message "org.xrpl.rpc.v1.TicketObject" do
+      optional :flags, :message, 1, "org.xrpl.rpc.v1.Flags"
+      optional :account, :message, 2, "org.xrpl.rpc.v1.Account"
+      optional :owner_node, :message, 3, "org.xrpl.rpc.v1.OwnerNode"
+      optional :previous_transaction_id, :message, 4, "org.xrpl.rpc.v1.PreviousTransactionID"
+      optional :previous_transaction_ledger_sequence, :message, 5, "org.xrpl.rpc.v1.PreviousTransactionLedgerSequence"
+      optional :ticket_sequence, :message, 6, "org.xrpl.rpc.v1.TicketSequence"
+    end
+    add_message "org.xrpl.rpc.v1.NegativeUNL" do
+      repeated :disabled_validators, :message, 1, "org.xrpl.rpc.v1.DisabledValidator"
+      optional :validator_to_disable, :message, 2, "org.xrpl.rpc.v1.ValidatorToDisable"
+      optional :validator_to_re_enable, :message, 3, "org.xrpl.rpc.v1.ValidatorToReEnable"
+      optional :flags, :message, 4, "org.xrpl.rpc.v1.Flags"
+    end
     add_enum "org.xrpl.rpc.v1.LedgerEntryType" do
       value :LEDGER_ENTRY_TYPE_UNSPECIFIED, 0
       value :LEDGER_ENTRY_TYPE_ACCOUNT_ROOT, 1
@@ -178,6 +196,8 @@ Google::Protobuf::DescriptorPool.generated_pool.build do
       value :LEDGER_ENTRY_TYPE_PAY_CHANNEL, 10
       value :LEDGER_ENTRY_TYPE_RIPPLE_STATE, 11
       value :LEDGER_ENTRY_TYPE_SIGNER_LIST, 12
+      value :LEDGER_ENTRY_TYPE_NEGATIVE_UNL, 13
+      value :LEDGER_ENTRY_TYPE_TICKET, 14
     end
   end
 end
@@ -201,6 +221,8 @@ module Org
         PayChannel = Google::Protobuf::DescriptorPool.generated_pool.lookup("org.xrpl.rpc.v1.PayChannel").msgclass
         RippleState = Google::Protobuf::DescriptorPool.generated_pool.lookup("org.xrpl.rpc.v1.RippleState").msgclass
         SignerList = Google::Protobuf::DescriptorPool.generated_pool.lookup("org.xrpl.rpc.v1.SignerList").msgclass
+        TicketObject = Google::Protobuf::DescriptorPool.generated_pool.lookup("org.xrpl.rpc.v1.TicketObject").msgclass
+        NegativeUNL = Google::Protobuf::DescriptorPool.generated_pool.lookup("org.xrpl.rpc.v1.NegativeUNL").msgclass
         LedgerEntryType = Google::Protobuf::DescriptorPool.generated_pool.lookup("org.xrpl.rpc.v1.LedgerEntryType").enummodule
       end
     end
