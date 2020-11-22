@@ -56,7 +56,7 @@ namespace :build do
     `git submodule update --remote --init --recursive xpring-common-js`
     Dir.chdir(File.expand_path("./xpring-common-js", __dir__))
     `npm i`
-    `npm run webpack`
+    `NODE_TARGET=node npm run webpack`
     lib_dir = File.dirname(Xpring::Javascript::LIBRARY_PATH)
     Dir.mkdir(lib_dir) unless Dir.exist?(lib_dir)
     FileUtils.cp("dist/index.js", Xpring::Javascript::LIBRARY_PATH)
