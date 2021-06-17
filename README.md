@@ -1,3 +1,8 @@
+#### ***This repo is no longer maintained.*** 
+
+If you are interested in an XRPL/Ripple library for Ruby please open an issue! I want to gauge interest in a rewrite.
+
+
 # Xpring
 
 Xpring-Ruby is the Ruby client-side library for the Xpring SDK. It allows you
